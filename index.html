@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sylvena Labs — AI & Data Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --deep: #0f0e0c;
+      --gold: #c9a84c;
+      --gold-light: #e8c97a;
+      --gold-dim: #8a6c28;
+      --green: #1a2e1e;
+      --green-mid: #243b28;
+      --green-accent: #2f5235;
+      --green-light: #4a7c52;
+      --white: #f5f0e8;
+      --cream: #ede8dc;
+      --muted: #8a8278;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 8px; height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      transition: transform 0.1s ease;
+    }
+    .cursor-ring {
+      width: 32px; height: 32px;
+      border: 1px solid var(--gold-dim);
+      border-radius: 50%;
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9998;
+      transition: transform 0.18s ease, opacity 0.2s;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 28px 60px;
+      background: linear-gradient(to bottom, rgba(10,10,10,0.95) 0%, transparent 100%);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none;
+    }
+    .nav-logo-svg { height: 38px; width: auto; }
+    .nav-logo-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--cream);
+    }
+    .nav-logo-text span { color: var(--gold); }
+    .nav-links { display: flex; gap: 40px; }
+    .nav-links a {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 70% 50%, rgba(42, 78, 48, 0.18) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 20% 80%, rgba(201, 168, 76, 0.06) 0%, transparent 60%),
+        linear-gradient(160deg, #0a0a0a 0%, #0e0d0b 40%, #111510 100%);
+    }
+
+    /* Geometric grid overlay */
+    .hero-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    /* Diagonal accent line */
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 30%;
+      width: 1px; height: 100%;
+      background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.15) 30%, rgba(201,168,76,0.25) 60%, transparent);
+    }
+
+    .hero-left {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 120px 60px 80px 60px;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 32px;
+      display: flex; align-items: center; gap: 16px;
+      opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: inline-block; width: 32px; height: 1px;
+      background: var(--gold-dim);
+    }
+
+    .hero-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3.2rem, 5.5vw, 5.5rem);
+      line-height: 1.0;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      margin-bottom: 28px;
+      opacity: 0; animation: fadeUp 0.9s 0.4s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-sub {
+      font-size: 0.85rem;
+      line-height: 1.9;
+      color: var(--muted);
+      max-width: 440px;
+      margin-bottom: 52px;
+      letter-spacing: 0.04em;
+      opacity: 0; animation: fadeUp 0.9s 0.6s forwards;
+    }
+
+    .hero-cta {
+      display: flex; gap: 20px; align-items: center;
+      opacity: 0; animation: fadeUp 0.9s 0.8s forwards;
+    }
+    .btn-primary {
+      background: var(--gold);
+      color: var(--black);
+      font-family: 'Jost', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 16px 36px;
+      border: none;
+      cursor: none;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+    .btn-ghost {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+      transition: color 0.3s;
+    }
+    .btn-ghost::after {
+      content: '→';
+      font-size: 1rem;
+      transition: transform 0.3s;
+    }
+    .btn-ghost:hover { color: var(--white); }
+    .btn-ghost:hover::after { transform: translateX(4px); }
+
+    .hero-right {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-end;
+      padding: 120px 60px 80px 40px;
+      overflow: hidden;
+    }
+
+    .hero-stat-stack {
+      display: flex; flex-direction: column; gap: 32px;
+      opacity: 0; animation: fadeLeft 1s 1s forwards;
+    }
+    .hero-stat {
+      text-align: right;
+      padding-right: 24px;
+      border-right: 1px solid var(--gold-dim);
+    }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* MARQUEE */
+    .marquee-wrap {
+      border-top: 1px solid rgba(201,168,76,0.12);
+      border-bottom: 1px solid rgba(201,168,76,0.12);
+      background: var(--deep);
+      overflow: hidden;
+      padding: 14px 0;
+    }
+    .marquee-track {
+      display: flex; gap: 0;
+      animation: marquee 30s linear infinite;
+      width: max-content;
+    }
+    .marquee-item {
+      font-size: 0.62rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 48px;
+      white-space: nowrap;
+    }
+    .marquee-sep {
+      color: var(--gold-dim);
+      padding: 0 16px 0 0;
+    }
+
+    /* SERVICES */
+    .services {
+      padding: 120px 60px;
+      background: var(--deep);
+      position: relative;
+    }
+    .services::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.2), transparent);
+    }
+
+    .section-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      margin-bottom: 64px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .section-label::before {
+      content: '';
+      display: inline-block; width: 24px; height: 1px;
+      background: var(--gold-dim);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .service-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(201,168,76,0.08);
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.4s, background 0.4s;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+      transform: scaleX(0);
+      transition: transform 0.5s;
+    }
+    .service-card:hover {
+      background: rgba(201,168,76,0.04);
+      border-color: rgba(201,168,76,0.2);
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+
+    .service-icon {
+      font-size: 1.6rem;
+      margin-bottom: 28px;
+      display: block;
+    }
+    .service-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.75rem;
+      color: var(--gold-dim);
+      letter-spacing: 0.2em;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .service-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .service-desc {
+      font-size: 0.8rem;
+      line-height: 1.9;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+    .service-tags {
+      margin-top: 28px;
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .tag {
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold-dim);
+      border: 1px solid rgba(201,168,76,0.2);
+      padding: 5px 12px;
+    }
+
+    /* ABOUT / FOUNDER */
+    .founder {
+      padding: 120px 60px;
+      background: var(--green);
+      position: relative;
+      overflow: hidden;
+    }
+    .founder::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -100px;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+    }
+    .founder::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    .founder-inner {
+      position: relative; z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .founder-vision {
+      display: flex; flex-direction: column;
+      justify-content: center;
+      gap: 0;
+      padding: 48px 40px;
+      border: 1px solid rgba(201,168,76,0.15);
+      background: rgba(0,0,0,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+    .founder-vision::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    }
+    .vision-block { padding: 28px 0; }
+    .vision-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 14px;
+    }
+    .vision-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.2rem;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.75;
+      color: var(--cream);
+      opacity: 0.9;
+    }
+    .vision-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.2), transparent);
+    }
+    .vision-logo-mark {
+      margin-top: 32px;
+      opacity: 0.5;
+    }
+
+    .founder-content {}
+    .founder-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      font-weight: 400;
+      line-height: 1.05;
+      margin-bottom: 8px;
+    }
+    .founder-name em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .founder-role {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 40px;
+    }
+
+    .pedigree-row {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      margin-bottom: 44px;
+    }
+    .badge {
+      display: flex; align-items: center; gap: 8px;
+      border: 1px solid rgba(201,168,76,0.25);
+      padding: 8px 16px;
+      background: rgba(201,168,76,0.05);
+    }
+    .badge-icon { font-size: 0.9rem; }
+    .badge-text {
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 400;
+    }
+
+    .founder-bio {
+      font-size: 0.85rem;
+      line-height: 1.95;
+      color: var(--cream);
+      opacity: 0.8;
+      margin-bottom: 40px;
+      letter-spacing: 0.02em;
+    }
+    .founder-bio strong {
+      color: var(--gold);
+      font-weight: 400;
+    }
+
+    .founder-credentials {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .cred-item {
+      padding: 16px 20px;
+      border-left: 2px solid var(--gold-dim);
+      background: rgba(0,0,0,0.2);
+    }
+    .cred-title {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .cred-desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* PROCESS */
+    .process {
+      padding: 120px 60px;
+      background: linear-gradient(160deg, #0a0a0a 0%, #0f0e0c 100%);
+      position: relative;
+    }
+    .process-header {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; margin-bottom: 80px;
+    }
+    .process-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.2rem, 3.5vw, 3.5rem);
+      font-weight: 400;
+      line-height: 1.1;
+    }
+    .process-title em { font-style: italic; color: var(--gold); }
+    .process-tagline {
+      font-size: 0.82rem;
+      line-height: 1.9;
+      color: var(--muted);
+      align-self: end;
+      letter-spacing: 0.03em;
+    }
+    .process-steps {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      position: relative;
+    }
+    .process-steps::before {
+      content: '';
+      position: absolute; top: 28px; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,168,76,0.2), rgba(201,168,76,0.2), transparent);
+    }
+    .step {
+      padding: 0 32px 0 0;
+      position: relative;
+    }
+    .step-dot {
+      width: 12px; height: 12px;
+      border: 2px solid var(--gold-dim);
+      border-radius: 50%;
+      background: var(--black);
+      margin-bottom: 28px;
+      position: relative; z-index: 1;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .step:hover .step-dot {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+    .step-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.75rem;
+      color: var(--gold-dim);
+      letter-spacing: 0.2em;
+      margin-bottom: 12px;
+    }
+    .step-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+    }
+    .step-desc {
+      font-size: 0.75rem;
+      line-height: 1.85;
+      color: var(--muted);
+    }
+
+    /* CONTACT */
+    .contact {
+      padding: 120px 60px;
+      background: var(--green);
+      position: relative;
+      overflow: hidden;
+    }
+    .contact::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 50% 80% at 80% 50%, rgba(201,168,76,0.07) 0%, transparent 60%);
+    }
+    .contact-inner {
+      position: relative; z-index: 2;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+      align-items: center;
+    }
+    .contact-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.5rem, 4vw, 4rem);
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+    .contact-title em { font-style: italic; color: var(--gold); }
+    .contact-sub {
+      font-size: 0.82rem;
+      line-height: 1.9;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+      margin-bottom: 40px;
+    }
+    .contact-email {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      color: var(--gold);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 12px;
+      transition: opacity 0.3s;
+    }
+    .contact-email:hover { opacity: 0.7; }
+    .contact-links {
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    .contact-link-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 28px;
+      border: 1px solid rgba(201,168,76,0.12);
+      background: rgba(0,0,0,0.2);
+      text-decoration: none;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .contact-link-item:hover {
+      border-color: rgba(201,168,76,0.3);
+      background: rgba(201,168,76,0.05);
+    }
+    .cli-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .cli-value {
+      font-size: 0.82rem;
+      color: var(--white);
+    }
+    .cli-arrow { color: var(--gold-dim); font-size: 1rem; }
+
+    /* FOOTER */
+    footer {
+      padding: 40px 60px;
+      background: var(--black);
+      border-top: 1px solid rgba(201,168,76,0.08);
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      color: var(--gold-dim);
+      letter-spacing: 0.2em;
+    }
+    .footer-copy {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeLeft {
+      from { opacity: 0; transform: translateX(24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    @media (max-width: 900px) {
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-left { padding: 100px 24px 40px; }
+      .hero-right { display: none; }
+      .services { padding: 80px 24px; }
+      .services-grid { grid-template-columns: 1fr; }
+      .founder { padding: 80px 24px; }
+      .founder-inner { grid-template-columns: 1fr; gap: 40px; }
+      .process { padding: 80px 24px; }
+      .process-header { grid-template-columns: 1fr; gap: 20px; }
+      .process-steps { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .process-steps::before { display: none; }
+      .contact { padding: 80px 24px; }
+      .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+      footer { padding: 32px 24px; flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#home" class="nav-logo">
+      <!-- Sylvena Labs Logo SVG -->
+      <svg class="nav-logo-svg" viewBox="0 0 56 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Geodesic dome outer ring -->
+        <circle cx="28" cy="26" r="22" stroke="url(#goldGrad)" stroke-width="0.6" fill="none" opacity="0.35"/>
+        <!-- Dome arc top half only -->
+        <path d="M 6 26 A 22 22 0 0 1 50 26" stroke="url(#goldGrad)" stroke-width="0.8" fill="none" opacity="0.5"/>
+        <!-- Geodesic structure lines -->
+        <line x1="28" y1="4" x2="6" y2="26" stroke="url(#goldGrad)" stroke-width="0.7" opacity="0.5"/>
+        <line x1="28" y1="4" x2="50" y2="26" stroke="url(#goldGrad)" stroke-width="0.7" opacity="0.5"/>
+        <line x1="28" y1="4" x2="28" y2="26" stroke="url(#goldGrad)" stroke-width="0.7" opacity="0.4"/>
+        <line x1="6" y1="26" x2="50" y2="26" stroke="url(#goldGrad)" stroke-width="0.7" opacity="0.4"/>
+        <line x1="6" y1="26" x2="17" y2="11" stroke="url(#goldGrad)" stroke-width="0.6" opacity="0.35"/>
+        <line x1="50" y1="26" x2="39" y2="11" stroke="url(#goldGrad)" stroke-width="0.6" opacity="0.35"/>
+        <line x1="17" y1="11" x2="39" y2="11" stroke="url(#goldGrad)" stroke-width="0.6" opacity="0.35"/>
+        <line x1="17" y1="11" x2="28" y2="26" stroke="url(#goldGrad)" stroke-width="0.6" opacity="0.3"/>
+        <line x1="39" y1="11" x2="28" y2="26" stroke="url(#goldGrad)" stroke-width="0.6" opacity="0.3"/>
+        <!-- Ground line -->
+        <line x1="6" y1="26" x2="50" y2="26" stroke="url(#goldGrad)" stroke-width="0.9" opacity="0.6"/>
+        <!-- Stylized trees (3 green triangles) -->
+        <!-- Center tree tall -->
+        <polygon points="28,8 22,26 34,26" fill="url(#greenFill)" opacity="0.7"/>
+        <!-- Left tree -->
+        <polygon points="16,14 11,26 21,26" fill="url(#greenFill)" opacity="0.5"/>
+        <!-- Right tree -->
+        <polygon points="40,14 35,26 45,26" fill="url(#greenFill)" opacity="0.5"/>
+        <!-- Tree trunks -->
+        <line x1="28" y1="26" x2="28" y2="32" stroke="#4a7c52" stroke-width="1.2" opacity="0.6"/>
+        <line x1="16" y1="26" x2="16" y2="31" stroke="#4a7c52" stroke-width="1" opacity="0.4"/>
+        <line x1="40" y1="26" x2="40" y2="31" stroke="#4a7c52" stroke-width="1" opacity="0.4"/>
+        <!-- Ground base line -->
+        <line x1="8" y1="32" x2="48" y2="32" stroke="url(#goldGrad)" stroke-width="0.8" opacity="0.5"/>
+        <!-- Geodesic nodes dots -->
+        <circle cx="28" cy="4" r="1.5" fill="#c9a84c" opacity="0.9"/>
+        <circle cx="6" cy="26" r="1.3" fill="#c9a84c" opacity="0.7"/>
+        <circle cx="50" cy="26" r="1.3" fill="#c9a84c" opacity="0.7"/>
+        <circle cx="17" cy="11" r="1.2" fill="#c9a84c" opacity="0.6"/>
+        <circle cx="39" cy="11" r="1.2" fill="#c9a84c" opacity="0.6"/>
+        <circle cx="28" cy="26" r="1.2" fill="#c9a84c" opacity="0.6"/>
+        <!-- Central SL monogram circle -->
+        <circle cx="28" cy="20" r="7.5" fill="rgba(10,10,10,0.85)" stroke="url(#goldGrad)" stroke-width="0.8"/>
+        <!-- SL text -->
+        <text x="28" y="24" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="8" font-weight="500" fill="url(#goldGrad)" letter-spacing="0.5">SL</text>
+        <!-- Defs -->
+        <defs>
+          <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#e8c97a"/>
+            <stop offset="50%" stop-color="#c9a84c"/>
+            <stop offset="100%" stop-color="#8a6c28"/>
+          </linearGradient>
+          <linearGradient id="greenFill" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#4a7c52" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#1a2e1e" stop-opacity="0.7"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="nav-logo-text">Sylvena <span>Labs</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#founder">About</a>
+      <a href="#process">Process</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-bg"></div>
+    <div class="hero-left">
+      <div class="hero-eyebrow">AI & Data Intelligence Consulting</div>
+      <h1 class="hero-title">
+        Intelligent<br>Systems<br><em>Built for</em><br>Business
+      </h1>
+      <p class="hero-sub">
+        AI agent design and data visualization consulting for small and mid-sized businesses — precision-engineered by a BCG, PwC, and award-winning quantitative research background.
+      </p>
+      <div class="hero-cta">
+        <a href="#contact" class="btn-primary">Engage Us</a>
+        <a href="#services" class="btn-ghost">Our Services</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <!-- Large logo mark as hero visual -->
+      <div style="position:absolute; top:50%; right:60px; transform:translateY(-50%); opacity:0; animation: fadeLeft 1.2s 0.5s forwards;">
+        <svg viewBox="0 0 200 230" width="320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Outer geodesic circle -->
+          <circle cx="100" cy="95" r="80" stroke="url(#hGoldGrad)" stroke-width="0.6" fill="none" opacity="0.15"/>
+          <!-- Dome arc -->
+          <path d="M 20 95 A 80 80 0 0 1 180 95" stroke="url(#hGoldGrad)" stroke-width="1" fill="none" opacity="0.3"/>
+          <!-- Geodesic lines -->
+          <line x1="100" y1="15" x2="20" y2="95" stroke="url(#hGoldGrad)" stroke-width="0.8" opacity="0.4"/>
+          <line x1="100" y1="15" x2="180" y2="95" stroke="url(#hGoldGrad)" stroke-width="0.8" opacity="0.4"/>
+          <line x1="100" y1="15" x2="100" y2="95" stroke="url(#hGoldGrad)" stroke-width="0.7" opacity="0.3"/>
+          <line x1="20" y1="95" x2="180" y2="95" stroke="url(#hGoldGrad)" stroke-width="0.8" opacity="0.35"/>
+          <line x1="20" y1="95" x2="60" y2="40" stroke="url(#hGoldGrad)" stroke-width="0.7" opacity="0.3"/>
+          <line x1="180" y1="95" x2="140" y2="40" stroke="url(#hGoldGrad)" stroke-width="0.7" opacity="0.3"/>
+          <line x1="60" y1="40" x2="140" y2="40" stroke="url(#hGoldGrad)" stroke-width="0.7" opacity="0.3"/>
+          <line x1="60" y1="40" x2="100" y2="95" stroke="url(#hGoldGrad)" stroke-width="0.6" opacity="0.25"/>
+          <line x1="140" y1="40" x2="100" y2="95" stroke="url(#hGoldGrad)" stroke-width="0.6" opacity="0.25"/>
+          <!-- Extra inner geodesic lines for complexity -->
+          <line x1="60" y1="40" x2="20" y2="95" stroke="url(#hGoldGrad)" stroke-width="0.5" opacity="0.2"/>
+          <line x1="140" y1="40" x2="180" y2="95" stroke="url(#hGoldGrad)" stroke-width="0.5" opacity="0.2"/>
+          <line x1="100" y1="15" x2="60" y2="40" stroke="url(#hGoldGrad)" stroke-width="0.5" opacity="0.2"/>
+          <line x1="100" y1="15" x2="140" y2="40" stroke="url(#hGoldGrad)" stroke-width="0.5" opacity="0.2"/>
+          <!-- Trees — center tall -->
+          <polygon points="100,28 76,95 124,95" fill="url(#hGreenFill)" opacity="0.55"/>
+          <!-- Left tree -->
+          <polygon points="58,44 38,95 78,95" fill="url(#hGreenFill)" opacity="0.38"/>
+          <!-- Right tree -->
+          <polygon points="142,44 122,95 162,95" fill="url(#hGreenFill)" opacity="0.38"/>
+          <!-- Tree trunks -->
+          <line x1="100" y1="95" x2="100" y2="118" stroke="#4a7c52" stroke-width="3" opacity="0.5"/>
+          <line x1="58" y1="95" x2="58" y2="112" stroke="#4a7c52" stroke-width="2.5" opacity="0.35"/>
+          <line x1="142" y1="95" x2="142" y2="112" stroke="#4a7c52" stroke-width="2.5" opacity="0.35"/>
+          <!-- Ground base -->
+          <line x1="22" y1="118" x2="178" y2="118" stroke="url(#hGoldGrad)" stroke-width="1.2" opacity="0.4"/>
+          <!-- Geodesic nodes -->
+          <circle cx="100" cy="15" r="4" fill="#c9a84c" opacity="0.8"/>
+          <circle cx="20" cy="95" r="3.5" fill="#c9a84c" opacity="0.6"/>
+          <circle cx="180" cy="95" r="3.5" fill="#c9a84c" opacity="0.6"/>
+          <circle cx="60" cy="40" r="3" fill="#c9a84c" opacity="0.5"/>
+          <circle cx="140" cy="40" r="3" fill="#c9a84c" opacity="0.5"/>
+          <circle cx="100" cy="95" r="3" fill="#c9a84c" opacity="0.5"/>
+          <!-- Central monogram ring -->
+          <circle cx="100" cy="72" r="28" fill="rgba(10,10,10,0.7)" stroke="url(#hGoldGrad)" stroke-width="1.2"/>
+          <circle cx="100" cy="72" r="24" fill="none" stroke="rgba(201,168,76,0.2)" stroke-width="0.5"/>
+          <!-- SL monogram -->
+          <text x="100" y="82" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="28" font-weight="400" fill="url(#hGoldGrad)" letter-spacing="2">SL</text>
+          <defs>
+            <linearGradient id="hGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#e8c97a"/>
+              <stop offset="50%" stop-color="#c9a84c"/>
+              <stop offset="100%" stop-color="#8a6c28"/>
+            </linearGradient>
+            <linearGradient id="hGreenFill" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#4a7c52" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#1a2e1e" stop-opacity="0.5"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <!-- Stats anchored bottom right -->
+      <div class="hero-stat-stack">
+        <div class="hero-stat">
+          <div class="stat-num">#1</div>
+          <div class="stat-label">Olin Master's Quant Research</div>
+        </div>
+        <div class="hero-stat">
+          <div class="stat-num">20%</div>
+          <div class="stat-label">Higher Sortino vs. Benchmark</div>
+        </div>
+        <div class="hero-stat">
+          <div class="stat-num">BCG</div>
+          <div class="stat-label">Strategy Consulting Pedigree</div>
+        </div>
+        <div class="hero-stat">
+          <div class="stat-num">PwC</div>
+          <div class="stat-label">Data & Analytics Consulting</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item">AI Agent Design <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Data Visualization <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">SMB Automation <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Financial Analytics <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Machine Learning Pipelines <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Quantitative Research <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Business Intelligence <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Due Diligence Automation <span class="marquee-sep">✦</span></span>
+      <!-- duplicate for seamless loop -->
+      <span class="marquee-item">AI Agent Design <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Data Visualization <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">SMB Automation <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Financial Analytics <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Machine Learning Pipelines <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Quantitative Research <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Business Intelligence <span class="marquee-sep">✦</span></span>
+      <span class="marquee-item">Due Diligence Automation <span class="marquee-sep">✦</span></span>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section class="services" id="services">
+    <div class="section-label reveal">What We Do</div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1">
+        <span class="service-num">01</span>
+        <h3 class="service-title">AI Agent Design & Consulting</h3>
+        <p class="service-desc">
+          We architect production-ready AI agent systems tailored to your business workflows — from intelligent automation pipelines to LLM-powered decision support tools. Strategy through deployment.
+        </p>
+        <div class="service-tags">
+          <span class="tag">LLM Integration</span>
+          <span class="tag">Workflow Automation</span>
+          <span class="tag">Multi-Agent Systems</span>
+        </div>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <span class="service-num">02</span>
+        <h3 class="service-title">Data Visualization & BI</h3>
+        <p class="service-desc">
+          Complex data made legible. We design and implement interactive dashboards and analytical frameworks that surface the insights your team needs, using Tableau, Power BI, and custom solutions.
+        </p>
+        <div class="service-tags">
+          <span class="tag">Tableau</span>
+          <span class="tag">Power BI</span>
+          <span class="tag">Custom Dashboards</span>
+        </div>
+      </div>
+      <div class="service-card reveal reveal-delay-3">
+        <span class="service-num">03</span>
+        <h3 class="service-title">Analytics Infrastructure</h3>
+        <p class="service-desc">
+          End-to-end data pipelines, ETL architecture, and SQL-based analytics frameworks built for scale. From raw operational data to board-ready reporting, we build the infrastructure that powers clarity.
+        </p>
+        <div class="service-tags">
+          <span class="tag">ETL Pipelines</span>
+          <span class="tag">SQL Analytics</span>
+          <span class="tag">Python / Alteryx</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOUNDER -->
+  <section class="founder" id="founder">
+    <div class="section-label reveal">The Principal</div>
+    <div class="founder-inner">
+      <!-- Vision/Mission panel replaces portrait -->
+      <div class="founder-vision reveal">
+        <div class="vision-block">
+          <div class="vision-label">Vision</div>
+          <p class="vision-text">To see the forest and every tree — building AI systems that hold the strategic picture and the granular detail in equal precision.</p>
+        </div>
+        <div class="vision-divider"></div>
+        <div class="vision-block">
+          <div class="vision-label">Mission</div>
+          <p class="vision-text">To make intelligence actionable. We translate complex data ecosystems into systems that think, decide, and scale — so businesses can move with clarity and confidence.</p>
+        </div>
+        <!-- Decorative logo SVG -->
+        <div class="vision-logo-mark">
+          <svg viewBox="0 0 120 100" width="90" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 10 60 A 50 50 0 0 1 110 60" stroke="url(#vGold)" stroke-width="0.8" fill="none" opacity="0.35"/>
+            <line x1="60" y1="10" x2="10" y2="60" stroke="url(#vGold)" stroke-width="0.7" opacity="0.3"/>
+            <line x1="60" y1="10" x2="110" y2="60" stroke="url(#vGold)" stroke-width="0.7" opacity="0.3"/>
+            <line x1="35" y1="30" x2="85" y2="30" stroke="url(#vGold)" stroke-width="0.6" opacity="0.25"/>
+            <polygon points="60,12 48,60 72,60" fill="url(#vGreen)" opacity="0.5"/>
+            <polygon points="33,32 22,60 44,60" fill="url(#vGreen)" opacity="0.35"/>
+            <polygon points="87,32 76,60 98,60" fill="url(#vGreen)" opacity="0.35"/>
+            <line x1="15" y1="68" x2="105" y2="68" stroke="url(#vGold)" stroke-width="0.8" opacity="0.3"/>
+            <circle cx="60" cy="10" r="2.5" fill="#c9a84c" opacity="0.7"/>
+            <circle cx="10" cy="60" r="2" fill="#c9a84c" opacity="0.5"/>
+            <circle cx="110" cy="60" r="2" fill="#c9a84c" opacity="0.5"/>
+            <defs>
+              <linearGradient id="vGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#e8c97a"/><stop offset="100%" stop-color="#8a6c28"/>
+              </linearGradient>
+              <linearGradient id="vGreen" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#4a7c52" stop-opacity="0.9"/><stop offset="100%" stop-color="#1a2e1e" stop-opacity="0.4"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+      <div class="founder-content">
+        <h2 class="founder-name reveal">Jenny <em>Seongryung</em> Kim</h2>
+        <p class="founder-role reveal">Founder &amp; Principal Consultant</p>
+
+        <div class="pedigree-row reveal">
+          <div class="badge"><span class="badge-icon">◆</span><span class="badge-text">BCG</span></div>
+          <div class="badge"><span class="badge-icon">◆</span><span class="badge-text">PwC</span></div>
+          <div class="badge"><span class="badge-icon">◆</span><span class="badge-text">Kearney</span></div>
+          <div class="badge"><span class="badge-icon">🏆</span><span class="badge-text">Wells Fargo CFAR 1st Place</span></div>
+          <div class="badge"><span class="badge-icon">◆</span><span class="badge-text">WashU Olin MSBA</span></div>
+        </div>
+
+        <p class="founder-bio reveal">
+          Jenny brings a rare intersection of <strong>elite strategy consulting</strong> and <strong>rigorous quantitative research</strong>. With experience at Boston Consulting Group, PwC, and Kearney, she has delivered data-driven transformation for Fortune 500 clients across healthcare, financial services, and technology sectors.
+        </p>
+        <p class="founder-bio reveal">
+          At Washington University's Olin Business School (MSBA, Fintech), she <strong>ranked #1 across all Master's programs</strong> in the Wells Fargo Advisors Fall 2025 Showcase — designing a macro regime detection-driven factor rotation strategy that achieved a <strong>20% higher 5-year Sortino ratio</strong> versus benchmark.
+        </p>
+
+        <div class="founder-credentials reveal">
+          <div class="cred-item">
+            <div class="cred-title">M&A Analytics</div>
+            <div class="cred-desc">LBO modeling, purchase price allocation, EV/EBITDA analysis across pharma and media sectors</div>
+          </div>
+          <div class="cred-item">
+            <div class="cred-title">Quant Research</div>
+            <div class="cred-desc">Macro regime detection, factor rotation strategies, financial machine learning</div>
+          </div>
+          <div class="cred-item">
+            <div class="cred-title">Data Engineering</div>
+            <div class="cred-desc">ETL pipelines, SQL analytics, Tableau and Power BI dashboard development</div>
+          </div>
+          <div class="cred-item">
+            <div class="cred-title">AI Implementation</div>
+            <div class="cred-desc">Generative AI due diligence, automated analytics frameworks, startup evaluation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="process" id="process">
+    <div class="process-header">
+      <h2 class="process-title reveal">How We <em>Work</em></h2>
+      <p class="process-tagline reveal">
+        A rigorous engagement model built on strategic clarity, technical precision, and measurable outcomes. Every project follows the same disciplined framework.
+      </p>
+    </div>
+    <div class="process-steps">
+      <div class="step reveal reveal-delay-1">
+        <div class="step-dot"></div>
+        <div class="step-num">01</div>
+        <div class="step-name">Discovery</div>
+        <p class="step-desc">Deep-dive into your business context, data landscape, and objectives. We define the problem before proposing solutions.</p>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-dot"></div>
+        <div class="step-num">02</div>
+        <div class="step-name">Architecture</div>
+        <p class="step-desc">Design the system — agent workflows, data pipelines, visualization schemas — with clear technical specifications.</p>
+      </div>
+      <div class="step reveal reveal-delay-3">
+        <div class="step-dot"></div>
+        <div class="step-num">03</div>
+        <div class="step-name">Delivery</div>
+        <p class="step-desc">Build and deploy with iterative feedback loops. Production-grade outputs, documented and maintainable.</p>
+      </div>
+      <div class="step reveal reveal-delay-4">
+        <div class="step-dot"></div>
+        <div class="step-num">04</div>
+        <div class="step-name">Optimization</div>
+        <p class="step-desc">Post-launch refinement, performance analysis, and strategic guidance for scaling your intelligent systems.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contact">
+    <div class="contact-inner">
+      <div>
+        <div class="section-label reveal">Get In Touch</div>
+        <h2 class="contact-title reveal">Ready to <em>Build</em><br>Something<br>Exceptional?</h2>
+        <p class="contact-sub reveal">
+          We take on a select number of engagements each quarter. If you're an SMB looking to harness AI and data to outperform — let's talk.
+        </p>
+        <a href="mailto:jenny.kim@sylvenalabs.ai" class="contact-email reveal">
+          jenny.kim@sylvenalabs.ai →
+        </a>
+      </div>
+      <div class="contact-links reveal">
+        <a href="https://www.linkedin.com/in/jenny-seongryung-kim/" target="_blank" class="contact-link-item">
+          <div>
+            <div class="cli-label">LinkedIn</div>
+            <div class="cli-value">jenny-seongryung-kim</div>
+          </div>
+          <span class="cli-arrow">↗</span>
+        </a>
+        <a href="https://github.com/SylvenaLabs" target="_blank" class="contact-link-item">
+          <div>
+            <div class="cli-label">GitHub</div>
+            <div class="cli-value">SylvenaLabs</div>
+          </div>
+          <span class="cli-arrow">↗</span>
+        </a>
+        <div class="contact-link-item" style="cursor:none;">
+          <div>
+            <div class="cli-label">Location</div>
+            <div class="cli-value">New York, NY</div>
+          </div>
+          <span class="cli-arrow" style="color:var(--muted)">●</span>
+        </div>
+        <div class="contact-link-item" style="cursor:none;">
+          <div>
+            <div class="cli-label">Availability</div>
+            <div class="cli-value">Accepting new clients</div>
+          </div>
+          <span class="cli-arrow" style="color:var(--green-light)">●</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="#home" style="text-decoration:none; display:flex; align-items:center; gap:10px;">
+      <svg height="28" viewBox="0 0 56 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 6 26 A 22 22 0 0 1 50 26" stroke="#8a6c28" stroke-width="0.8" fill="none"/>
+        <line x1="28" y1="4" x2="6" y2="26" stroke="#8a6c28" stroke-width="0.7"/>
+        <line x1="28" y1="4" x2="50" y2="26" stroke="#8a6c28" stroke-width="0.7"/>
+        <line x1="17" y1="11" x2="39" y2="11" stroke="#8a6c28" stroke-width="0.6"/>
+        <polygon points="28,8 22,26 34,26" fill="#1a2e1e" opacity="0.8"/>
+        <polygon points="16,14 11,26 21,26" fill="#1a2e1e" opacity="0.5"/>
+        <polygon points="40,14 35,26 45,26" fill="#1a2e1e" opacity="0.5"/>
+        <line x1="8" y1="32" x2="48" y2="32" stroke="#8a6c28" stroke-width="0.8" opacity="0.5"/>
+        <circle cx="28" cy="4" r="1.5" fill="#8a6c28"/>
+        <circle cx="28" cy="20" r="7.5" fill="rgba(10,10,10,0.9)" stroke="#8a6c28" stroke-width="0.7"/>
+        <text x="28" y="24" text-anchor="middle" font-family="Cormorant Garamond, serif" font-size="8" font-weight="500" fill="#8a6c28" letter-spacing="0.5">SL</text>
+      </svg>
+      <div class="footer-brand">SYLVENA LABS LLC</div>
+    </a>
+    <div class="footer-copy">© 2026 Sylvena Labs LLC · New York, NY · All rights reserved.</div>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.transform = `translate(${mx - 4}px, ${my - 4}px)`;
+    });
+    function animRing() {
+      rx += (mx - rx) * 0.14;
+      ry += (my - ry) * 0.14;
+      ring.style.transform = `translate(${rx - 16}px, ${ry - 16}px)`;
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
